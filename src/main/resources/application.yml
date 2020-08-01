@@ -1,0 +1,82 @@
+server:
+  port: 9511
+
+spring:
+  application:
+    name: user-service
+  redis:
+    database: 1
+    port: 6379
+    host: 192.168.31.52
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+    timeout: 1000ms
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      url: jdbc:mysql://192.168.31.52:3306/auth?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+      username: root
+      password: 123456
+      stat-view-servlet:
+        login-username: admin
+        login-password: admin
+        enabled: true
+        url-pattern: /druid/*
+      initial-size: 100
+      min-idle: 50
+      max-active: 100
+      max-wait: 65535
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg"
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  liquibase:
+    enabled: false
+    drop-first: false
+    url: ${spring.datasource.druid.url}
+    user: ${spring.datasource.druid.username}
+    password: ${spring.datasource.druid.password}
+    change-log: classpath:liquibase/master.xml
+  kafka:
+    producer:
+      bootstrap-servers: 192.168.31.52:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      batch-size: 4096
+    bootstrap-servers: 192.168.31.52:9092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9500/eureka/
+
+security:
+  oauth2:
+    client:
+      client-id: app-client
+      client-secret: user-secret-8888
+      user-authorization-uri: http://localhost:9210/oauth/authorize
+      access-token-uri: http://localhost:9210/oauth/token
+      exp-sec: 7200
+    authorization:
+      check-token-access: http://localhost:9210/oauth/check_token
+    resource:
+      user-info-uri: http://localhost:9210/user
+      prefer-token-info: true
+
+sms:
+  verify:
+    length: 6
+    expMin: 5
+
+app:
+  password:
+    matches: "^[\\w_-]{6,16}$"
+
+logging:
+  level:
+    org.springframework.security: debug
