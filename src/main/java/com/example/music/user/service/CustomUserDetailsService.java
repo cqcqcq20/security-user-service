@@ -58,7 +58,7 @@ public class CustomUserDetailsService {
         return userEntity;
     }
 
-    public int updatePasswordById(long id,String password) {
+    public boolean updatePasswordById(long id,String password) {
         return updatePasswordById(String.valueOf(id),password);
     }
 
@@ -68,12 +68,12 @@ public class CustomUserDetailsService {
      * @param password
      * @return
      */
-    public int updatePasswordById(String id,String password) {
+    public boolean updatePasswordById(String id,String password) {
         String newPassword = passwordEncoder.encode(Md5Utils.encode(password));
         UpdateWrapper<UserEntity> userEntityUpdateWrapper = new UpdateWrapper<UserEntity>()
                 .eq("id",id)
                 .set("password",newPassword);
-        return userMapper.update(null,userEntityUpdateWrapper);
+        return userMapper.update(null,userEntityUpdateWrapper) > 0;
     }
 
     /**

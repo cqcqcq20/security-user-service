@@ -1,5 +1,6 @@
 package com.example.music.user.config.token;
 
+import com.example.music.auth.basic.config.token.CustomUserAuthenticationConverter;
 import com.example.music.user.service.LocalAccessTokenService;
 import com.example.music.user.service.RedisTokenService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +44,13 @@ public class CustomRemoteTokenServices extends RemoteTokenServices {
 
     private String tokenName = "token";
 
-    private AccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
+    private DefaultAccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
 
     private LocalAccessTokenService localAccessTokenService;
 
     public CustomRemoteTokenServices(LocalAccessTokenService localAccessTokenService) {
         restTemplate = new RestTemplate();
+        tokenConverter.setUserTokenConverter(new CustomUserAuthenticationConverter());
         this.localAccessTokenService = localAccessTokenService;
         ((RestTemplate) restTemplate).setErrorHandler(new DefaultResponseErrorHandler() {
             @Override
@@ -73,7 +75,6 @@ public class CustomRemoteTokenServices extends RemoteTokenServices {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", getAuthorizationHeader(clientId, clientSecret));
         Map<String, Object> map = postForMap(accessTokenUri, formData, headers);
-        log.debug("refreshToken => {}",map);
     }
 
     public void setRestTemplate(RestOperations restTemplate) {
@@ -92,7 +93,7 @@ public class CustomRemoteTokenServices extends RemoteTokenServices {
         this.clientSecret = clientSecret;
     }
 
-    public void setAccessTokenConverter(AccessTokenConverter accessTokenConverter) {
+    public void setAccessTokenConverter(DefaultAccessTokenConverter accessTokenConverter) {
         this.tokenConverter = accessTokenConverter;
     }
 
@@ -104,7 +105,7 @@ public class CustomRemoteTokenServices extends RemoteTokenServices {
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        Map<String, Object> map = localAccessTokenService.getAccessToken(accessToken);
+        Map<String, Object> map = localAccessTokenService != null ? localAccessTokenService.getAccessToken(accessToken) : null;
         if (map == null) {
             formData.add(tokenName, accessToken);
             HttpHeaders headers = new HttpHeaders();
@@ -123,7 +124,7 @@ public class CustomRemoteTokenServices extends RemoteTokenServices {
                 logger.debug("check_token returned active attribute: " + map.get("active"));
                 throw new InvalidTokenException(accessToken);
             }
-            localAccessTokenService.storeAccessToken(accessToken,map,Long.parseLong(map.get("exp").toString()));
+            if (localAccessTokenService != null) localAccessTokenService.storeAccessToken(accessToken,map,Long.parseLong(map.get("exp").toString()));
         }
 
         return tokenConverter.extractAuthentication(map);

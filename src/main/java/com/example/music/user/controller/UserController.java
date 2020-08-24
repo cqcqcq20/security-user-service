@@ -4,12 +4,15 @@ import com.example.common.exception.BasicErrorCode;
 import com.example.common.rep.HttpResponse;
 import com.example.common.users.UserEntity;
 import com.example.log.ApiLog;
+import com.example.music.auth.basic.config.token.UserInfoAuthenticationToken;
 import com.example.music.user.service.CustomUserDetailsService;
 import org.example.vlidator.annotation.CheckParam;
 import org.example.vlidator.annotation.CheckParams;
 import org.example.vlidator.utils.Validat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,14 +27,11 @@ public class UserController {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-    @Autowired
-    private RemoteTokenServices remoteTokenServices;
-
     @GetMapping("/profile")
     @PreAuthorize("hasAuthority('app')")
     @ApiLog(module = "user",desc = "获取用户信息")
-    public HttpResponse<?> profile(Principal principal) {
-        return HttpResponse.success(customUserDetailsService.loadUserByUserId(principal.getName()));
+    public HttpResponse<?> profile(OAuth2Authentication principal) {
+        return HttpResponse.success(principal.getUserAuthentication().getDetails());
     }
 
     @PostMapping("avatar")

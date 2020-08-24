@@ -59,13 +59,13 @@ security:
     client:
       client-id: app-client
       client-secret: user-secret-8888
-      user-authorization-uri: http://localhost:9210/oauth/authorize
-      access-token-uri: http://localhost:9210/oauth/token
+      user-authorization-uri: http://localhost:9510/oauth/authorize
+      access-token-uri: http://localhost:9510/oauth/token
       exp-sec: 7200
     authorization:
-      check-token-access: http://localhost:9210/oauth/check_token
+      check-token-access: http://localhost:9510/oauth/check_token
     resource:
-      user-info-uri: http://localhost:9210/user
+      user-info-uri: http://localhost:9510/user
       prefer-token-info: true
 
 sms:

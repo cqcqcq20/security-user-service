@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScans;
 @EnableEurekaClient
 @MapperScan("com.example.music.**.mapper")
 @ComponentScans(value = {
-        @ComponentScan(basePackages = {"com.example.music"}),
+        @ComponentScan(basePackages = {"com.example"}),
 })
 public class UserServiceApplication {
 

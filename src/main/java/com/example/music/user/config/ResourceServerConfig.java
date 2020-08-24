@@ -63,7 +63,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Bean
     public CustomRemoteTokenServices tokenService() {
-        CustomRemoteTokenServices tokenService = new CustomRemoteTokenServices(localAccessTokenService);
+//        CustomRemoteTokenServices tokenService = new CustomRemoteTokenServices(localAccessTokenService);
+        CustomRemoteTokenServices tokenService = new CustomRemoteTokenServices(null);
         tokenService.setClientId(clientId);
         tokenService.setClientSecret(secret);
         tokenService.setCheckTokenEndpointUrl(checkTokenEndpointUrl);
