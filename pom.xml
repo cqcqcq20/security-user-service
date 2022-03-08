@@ -18,7 +18,7 @@
         <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
         <ali.druid.version>1.1.22</ali.druid.version>
         <baomidou.mybatisPlus.version>3.3.2</baomidou.mybatisPlus.version>
-        <liquibase.version>3.10.0</liquibase.version>
+        <liquibase.version>4.8.0</liquibase.version>
         <mysqlConnectorJava.version>8.0.20</mysqlConnectorJava.version>
         <jjwt.version>0.9.1</jjwt.version>
         <apiboot.sequence.version>2.2.5.RELEASE</apiboot.sequence.version>
